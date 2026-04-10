@@ -29,7 +29,7 @@ namespace POE
             }
             else if ( input == "what is cybersecurity")
                     {
-                        Console.WriteLine("I'm only just a bot. Unfortunetly I don't have feelings.");
+                        Console.WriteLine("Cybersecurity is the practice of defending computers, servers, mobile devices, electronic systems, networks, and data from malicious attacks.");
                     }
 
         }
