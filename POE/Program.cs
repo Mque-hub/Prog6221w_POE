@@ -1,11 +1,16 @@
-﻿using System;
+﻿using POE;
+using System;
 using System.Media;
 
 class Program 
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("Hello, World!");
+        Chatbot chat=new Chatbot();
+        User user=new User();
+
+        chat.PlayIntroLogic();
+        user.UserInfo();
     }
         
 }
