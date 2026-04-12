@@ -45,7 +45,7 @@ namespace POE
                                                                                                                      ");
 
             Console.WriteLine("==============================================================================================");
-            Console.WriteLine("                             Mque Cybersecurity Bot                                           ");
+            Console.WriteLine("                             MQue Cybersecurity Bot                                           ");
             Console.WriteLine("==============================================================================================");
 
 
