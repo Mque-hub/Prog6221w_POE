@@ -36,29 +36,7 @@
 # For a complete CI/CD sample to get started with GitHub Action workflows for Desktop Applications,
 # refer to https://github.com/microsoft/github-actions-for-desktop-apps
 
-name: .NET Core Desktop
-
-on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
-
-jobs:
-
-  build:
-
-    strategy:
-      matrix:
-        configuration: [Debug, Release]
-
-    runs-on: windows-latest  # For a list of available runner types, refer to
-                             # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
-
-    env:
-      Solution_Name: POE.sln                        # Replace with your solution name, i.e. MyWpfApp.sln.
-      
-   name: .NET CI
+name: .NET CI
 
 on:
   push:
@@ -71,19 +49,19 @@ jobs:
     runs-on: windows-latest
 
     env:
-      Solution_Name: MyApp.sln
+      Solution_Name: POE.sln
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
 
-    - name: Restore
-      run: dotnet restore ${{ env.Solution_Name }}
+      - name: Restore
+        run: dotnet restore ${{ env.Solution_Name }}
 
-    - name: Build
-      run: dotnet build ${{ env.Solution_Name }} --no-restore --configuration Release
+      - name: Build
+        run: dotnet build ${{ env.Solution_Name }} --no-restore --configuration Release
