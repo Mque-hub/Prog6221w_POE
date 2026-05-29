@@ -129,17 +129,19 @@
             </Grid.ColumnDefinitions>
 
 
+            
             <!-- USER INPUT -->
             <TextBox x:Name="UserInputTextBox"
-                     Grid.Column="0"
-                     Height="45"
-                     FontSize="16"
-                     Padding="10"
-                     Margin="0,0,10,0"
-                     VerticalContentAlignment="Center"
-                     Background="#2A2A2A"
-                     Foreground="White"
-                     BorderBrush="LimeGreen"/>
+         Grid.Column="0"
+         Height="45"
+         FontSize="16"
+         Padding="10"
+         Margin="0,0,10,0"
+         VerticalContentAlignment="Center"
+         Background="#2A2A2A"
+         Foreground="White"
+         BorderBrush="LimeGreen"
+         KeyDown="UserInputTextBox_KeyDown"/>
 
 
             <!-- SEND BUTTON -->

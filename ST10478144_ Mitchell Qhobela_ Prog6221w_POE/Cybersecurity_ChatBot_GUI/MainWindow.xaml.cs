@@ -22,12 +22,13 @@ namespace Cybersecurity_ChatBot_GUI
     /// </summary>
     public partial class MainWindow : Window
     {
+        ChatBot chat = new ChatBot();
         public MainWindow()
         {
             InitializeComponent();
             LoadAsciiArt();
 
-            ChatBot chat = new ChatBot();
+           
 
             chat.PlayIntroLogic();
 
@@ -102,7 +103,7 @@ namespace Cybersecurity_ChatBot_GUI
         }
 
 
-        public void SendButton_Click(object sender, RoutedEventArgs e)
+        public void SendMessage()
         {
             string userMessage = UserInputTextBox.Text;
 
@@ -112,9 +113,23 @@ namespace Cybersecurity_ChatBot_GUI
 
                 UserInputTextBox.Clear();
 
-                AddBotMessage("Message received.");
+                string response = chat.ProcessesInput(userMessage);
+                AddBotMessage(response);
 
                 ChatScrollViewer.ScrollToEnd();
+            }
+        }
+
+        private void SendButton_Click(object sender, RoutedEventArgs e)
+        {
+            SendMessage();
+        }
+
+        private void UserInputTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                SendMessage();
             }
         }
     }

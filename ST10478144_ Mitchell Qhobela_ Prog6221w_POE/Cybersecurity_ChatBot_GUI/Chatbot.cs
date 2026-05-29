@@ -23,12 +23,48 @@ namespace Cybersecurity_ChatBot_GUI
 
                 
             }
-
+        private KeywordResponder _keywords=new KeywordResponder();
+        private SentimentDetector _sentiment = new SentimentDetector();
+        private MemoryStore _memory=new MemoryStore();
         private bool _awaitingName = true;
         public string GetGreeting()
         {
             return "Hello! Welcome to MQue Cybersecurity Bot.\n what's your name";
             
+        }
+
+        public string ProcessesInput( string input) 
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return "Please enter something";
+
+            input = input.Trim().ToLower();
+
+            if (_awaitingName) 
+            {
+                _memory.UserName = input;
+                _awaitingName= false;
+
+                return $"Nice to meet you {_memory.UserName}. How are you doing today and what can I do for you?";
+            }
+            
+
+            if (input.Contains("how are you"))
+                {
+                return $"Sorry {_memory.UserName} I am only a chatbot, unfortunately I don't have feelings";
+                }
+
+            if (input.Contains("what can i ask you"))
+            {
+                return "You can ask my about topics such as:\n- " + string.Join("\n- ", _keywords.GetAllKeywords());
+            }
+
+            if (input.Contains("what is cybersecurity"))
+            {
+                return _keywords.ChatbotResponds("cybersecurity");
+            }
+
+            return "Please repeat that";
         }
 
 

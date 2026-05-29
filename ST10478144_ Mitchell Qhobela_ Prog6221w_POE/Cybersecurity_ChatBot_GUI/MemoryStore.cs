@@ -9,6 +9,7 @@ namespace Cybersecurity_ChatBot_GUI
 {
     public class MemoryStore
     {
+        // Create a 
         public string UserName
         { get; set; }
         public string FavouriteTopic { get; set; }
@@ -67,7 +68,7 @@ namespace Cybersecurity_ChatBot_GUI
 
             if (!string.IsNullOrEmpty(topic))
             {
-                return $"Because you mentioned your love for {topic}, a person who loves {topic} usually enjoys creative activities.";
+                return $"For a person who is interested in {topic},data security is important and I understand you.";
             }
 
             return "Tell me more about your interests.";
