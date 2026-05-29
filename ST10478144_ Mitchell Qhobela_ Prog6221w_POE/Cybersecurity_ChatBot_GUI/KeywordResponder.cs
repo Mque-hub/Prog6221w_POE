@@ -93,7 +93,7 @@ namespace Cybersecurity_ChatBot_GUI
         {
             { "Passwords", new List<string>{ "password", "strong password", } },
             { "Phishing", new List<string>{ "anti-virus", "virus", "protection from viruses" } },
-            { "Malware", new List<string>{ "protection from malware", "malware",  } },
+            { "Scam", new List<string>{ "protection from scams", "scam",  } },
             { "Cybersecurity", new List<string>{ "what is cybersecurity", "information security",  } },
             { "Identity Theft", new List<string>{ "Identity", "theft",  } }
         };
