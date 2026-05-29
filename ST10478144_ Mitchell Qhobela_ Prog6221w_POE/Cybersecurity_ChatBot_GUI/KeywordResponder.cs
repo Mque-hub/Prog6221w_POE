@@ -15,7 +15,7 @@ namespace Cybersecurity_ChatBot_GUI
         { "cybersecurity", new List<string>()
 
             {
-                "Cybersecurity is the practice of defending computers, servers, mobile devices, electronic systems, networks, and data from dangerous malicious attacks. ",
+                "Secure your digital life by enabling Multi-Factor Authentication (MFA) on all accounts, using long and unique passphrases via a dedicated password manager, and promptly installing all software updates. Additionally, never click unexpected links in emails, and avoid sensitive browsing over unencrypted public Wi-Fi without a VPN ",
                 "In today's society, cybersecurity is important and here's why? \n Cybersecurity is the practice of defending computers, servers, mobile devices, electronic systems, networks, and data from dangerous malicious attacks."
             }
 
@@ -72,6 +72,15 @@ namespace Cybersecurity_ChatBot_GUI
                 "Restrict your privacy settings on your social media accounts – the more private, the better. Try not to share your personal details online, such as your date of birth, address, and contact details. Remember, this information can be used by fraudsters to piece together your identity.\r\n\r\n"
             }
 
+        },
+
+        { "privacy", new List<string>()
+
+            {
+                "Privacy in cybersecurity refers to the fundamental right of individuals to control how their personal data—such as financial records, medical history, or online behavior—is collected, stored, and shared",
+                "Focus on securing the most sensitive accounts (email, banking) first with unique passwords, turn off unneeded location or app permissions, and use end-to-end encrypted messaging like Signal or ProtonMail"
+            }
+
         }
 
 
@@ -82,9 +91,11 @@ namespace Cybersecurity_ChatBot_GUI
         private static Dictionary<string, List<string>> _topics =
         new Dictionary<string, List<string>>() 
         {
-            { "Safe passwords", new List<string>{ "password", "strong password", } },
-            { "virus protection", new List<string>{ "anti-virus", "virus", "protection from viruses" } },
-            { "malware", new List<string>{ "protection from malware", "malware",  } }
+            { "Passwords", new List<string>{ "password", "strong password", } },
+            { "Phishing", new List<string>{ "anti-virus", "virus", "protection from viruses" } },
+            { "Malware", new List<string>{ "protection from malware", "malware",  } },
+            { "Cybersecurity", new List<string>{ "what is cybersecurity", "information security",  } },
+            { "Identity Theft", new List<string>{ "Identity", "theft",  } }
         };
 
         // printing all the topics in the _topics list
@@ -109,6 +120,18 @@ namespace Cybersecurity_ChatBot_GUI
                 return "I am still developing that information...";
             
             }
+        }
+
+        public string GetFollowUpResponse(string keyword)
+        {
+            if (_responses.ContainsKey(keyword))
+            {
+                List<string> responses = _responses[keyword];
+
+                return responses[0];
+            }
+
+            return "I don't have more information on that yet.";
         }
     }
 }

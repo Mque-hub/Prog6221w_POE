@@ -27,7 +27,7 @@ namespace Cybersecurity_ChatBot_GUI
             InitializeComponent();
             LoadAsciiArt();
 
-            timer.Interval = TimeSpan.FromSeconds(5);
+            timer.Interval = TimeSpan.FromSeconds(4);
 
             timer.Tick += Timer_Tick;
 
