@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cybersecurity_ChatBot_ Part
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cybersecurity_ChatBot_GUI_ Part 2", "Cybersecurity_ChatBot_GUI\Cybersecurity_ChatBot_GUI_ Part 2.csproj", "{07B60E68-6A3C-43F8-AEC3-BF6BEF43D066}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cybersecurity_ChatBot_GUI_ Part 3", "Cybersecurity_ChatBot_GUI _ Part 3\Cybersecurity_ChatBot_GUI_ Part 3.csproj", "{9A7DD77D-4F19-451F-A4CA-CE1C1765D875}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{07B60E68-6A3C-43F8-AEC3-BF6BEF43D066}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07B60E68-6A3C-43F8-AEC3-BF6BEF43D066}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07B60E68-6A3C-43F8-AEC3-BF6BEF43D066}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A7DD77D-4F19-451F-A4CA-CE1C1765D875}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A7DD77D-4F19-451F-A4CA-CE1C1765D875}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A7DD77D-4F19-451F-A4CA-CE1C1765D875}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A7DD77D-4F19-451F-A4CA-CE1C1765D875}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
