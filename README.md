@@ -1,14 +1,37 @@
-# POE
-## Youtube Presentation Link
-https://youtu.be/KOGunQ-_XsI  
-## POE Project
-- The fully built program is under the folder ST10478144_Prog6221w_POE
-- The folder includes the required greeting audio in the bin folder
+# Cybersecurity_ChatBot_GUI
+- This is the project of the POE Part 2 assignment
+## Student Details
+- Name: Mitchell Qhobela
+- Student Number: ST10478144
+## Features Implemented in Part 2
+- New and updated class included in the project are:
+      - MainWindow.xaml
+      - MainWindow.xaml.cs
+      - KeywordResponder.cs
+      - SentimentDetector.cs
+      - MemoryStore.cs
+      - ChatBot.cs (updated from part 1)
+  - The GUI and user interface  has now improved:
+      - a social media chat layout
+      - Sentiment detector to detect and respond to the user's state of wellbeing (emotions) as they send the text
+      - keyword responder that responds effectively based on the detected keywords in a users text
+      - interactive responses to statements such as "tell me more" or "explain more"
+      - The interface can recall the users name
+      - Recognition of a favourite topic and its personalized response
+## Project Clone and How to Run the Project
+  - In the ST10478144_ Mitchell Qhobela_ Prog6221w_POE folder you will find the Cybersecurity_ChatBot_GUI project
+  - You can download the zip or clone the project using the github link
+## System Prerequisites
+  - Visual Studio 2022
+  - .NET 4.8 - .NET 8.0
+  - Windows operation system
+## Addition Instructions
+  In the physical Cybersecurity_ChatBot_GUI project, in the bin folder,  there is a debug folder. In there you will find the Greeting.wav audio
+ In Github repository the Greeting.wav is in the Cybersecurity_ChatBot_GUI project, it must by place in the he bin folder, inside debug folder of the project when it is executed. 
+## Youtube Video Presentation
+https://youtu.be/VlxIAuGUCYM
 
-## Referencing List
-The following is a referencing list of the pages used for the cybersecurity information/research
-- Kaspersky, 2026. What is cybersecurity? Definition, types and tips. [online] Available at: https://www.kaspersky.com/resource-center/definitions/what-is-cyber-security [Accessed 10 March 2026].
-- Cloudfare, 2026. How DDoS attacks work. [online] Available at: https://www.cloudflare.com/en-au/learning/ddos/how-to-prevent-ddos-attacks/ [Accessed 10 March 2026].
-- Citation Cyber, 2026. FAQ's in cyber security. [online] Available at: https://citationcyber.com/blogs/faqs-in-cyber-security/ [Accessed 10 March 2026].
-- Microsoft, 2026. What is Tow-Factor Authentication (2FA)? [online] Available at: https://www.microsoft.com/en-us/security/business/security-101/what-is-two-factor-authentication-2fa [Accessed 11 March 2026].
-- Enisa, 2026. Cyber Hygiene. [online] Available at: https://www.enisa.europa.eu/topics/cyber-hygiene [Accessed 11 March 2026].
+## Screenshots of WOrking GUI and Greentick CL Workflows
+<img width="1453" height="802" alt="Screenshot 2026-05-29 225728" src="https://github.com/user-attachments/assets/8923ae70-3889-403a-86f4-f0acef553608" />
+<img width="1235" height="888" alt="Screenshot 2026-05-29 225337" src="https://github.com/user-attachments/assets/dae79b3d-e136-4e98-8476-fdaee53200f9" />
+
