@@ -9,7 +9,8 @@ namespace Cybersecurity_ChatBot_GUI
 {
     public class TaskLibrary
     {
-        private readonly string _connectionString;
+
+        private readonly string _connectionString;// This means it can only be accessed inside this class and assigned once
 
         public TaskLibrary(string connectionString)
         {
