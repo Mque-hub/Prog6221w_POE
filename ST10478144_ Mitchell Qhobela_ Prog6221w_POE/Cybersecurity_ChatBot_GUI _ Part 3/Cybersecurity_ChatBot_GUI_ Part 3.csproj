@@ -106,6 +106,7 @@
     </ApplicationDefinition>
     <Compile Include="ChatBot.cs" />
     <Compile Include="MemoryStore.cs" />
+    <Compile Include="QuizQuestions.cs" />
     <Compile Include="ReminderParser.cs" />
     <Compile Include="SentimentDetector.cs" />
     <Compile Include="SplashScreen.xaml.cs">

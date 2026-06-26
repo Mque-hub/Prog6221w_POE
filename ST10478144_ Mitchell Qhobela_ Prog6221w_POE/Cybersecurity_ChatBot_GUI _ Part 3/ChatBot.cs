@@ -29,6 +29,8 @@ namespace Cybersecurity_ChatBot_GUI
         private SentimentDetector _sentiment = new SentimentDetector();
         private MemoryStore _memory=new MemoryStore();
 
+        public string CurrentUserName => _memory.UserName;
+
         // Declarations
         private bool _awaitingName = true;
         private string _lastTopic;
@@ -46,16 +48,16 @@ namespace Cybersecurity_ChatBot_GUI
             if (string.IsNullOrWhiteSpace(input))
                 return "Please enter something";
 
-            input = input.Trim().ToLower();
-            Sentiment sentiment = _sentiment.Detect(input);
+            string originalInput = input.Trim();
+            string normalizedInput = originalInput.ToLower();
 
-            string emotionalReply =_sentiment.GetSentimentResponse(sentiment);
+            Sentiment sentiment = _sentiment.Detect(normalizedInput);
+            string emotionalReply = _sentiment.GetSentimentResponse(sentiment);
 
-            // a series of if statements to accomodate possible user inputs and their responses
-            if (_awaitingName) 
+            if (_awaitingName)
             {
-                _memory.UserName = input;
-                _awaitingName= false;
+                _memory.UserName = originalInput;   // keep real formatting
+                _awaitingName = false;
 
                 return $"Nice to meet you {_memory.UserName}. How are you doing today and what can I do for you?";
             }

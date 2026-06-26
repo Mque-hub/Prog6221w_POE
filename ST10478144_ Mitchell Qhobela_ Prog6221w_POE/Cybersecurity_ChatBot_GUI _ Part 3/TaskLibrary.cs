@@ -18,20 +18,49 @@ namespace Cybersecurity_ChatBot_GUI
         }
 
         public void AddTask(TaskItem task)
-        {
-            string query = @"INSERT INTO Tasks (TaskTitle, Description, ReminderDate, Username)
-                         VALUES (@title, @description, @reminderDate, @username)";
 
-            using (MySqlConnection conn = new MySqlConnection(_connectionString))
-            using (MySqlCommand cmd = new MySqlCommand(query, conn))
+        {
+
+            string query = @"INSERT INTO Tasks
+
+(TaskTitle, Description, ReminderDate, Username)
+
+VALUES (@title, @description, @reminderDate, @username)";
+
+            try
+
             {
-                cmd.Parameters.AddWithValue("@title", task.TaskTitle);
-                cmd.Parameters.AddWithValue("@description", task.Description);
-                cmd.Parameters.AddWithValue("@reminderDate", task.ReminderDate);
-                cmd.Parameters.AddWithValue("@username", task.Username);
-                conn.Open();
-                cmd.ExecuteNonQuery();
+
+                using (MySqlConnection conn = new MySqlConnection(_connectionString))
+
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+
+                {
+
+                    cmd.Parameters.AddWithValue("@title", task.TaskTitle);
+
+                    cmd.Parameters.AddWithValue("@description", task.Description);
+
+                    cmd.Parameters.AddWithValue("@reminderDate", task.ReminderDate);
+
+                    cmd.Parameters.AddWithValue("@username", task.Username);
+
+                    conn.Open();
+
+                    cmd.ExecuteNonQuery();
+
+                }
+
             }
+
+            catch (Exception ex)
+
+            {
+
+                throw new Exception("Database save failed: " + ex.Message);
+
+            }
+
         }
 
         public List<TaskItem> GetTasksByUser(string username)

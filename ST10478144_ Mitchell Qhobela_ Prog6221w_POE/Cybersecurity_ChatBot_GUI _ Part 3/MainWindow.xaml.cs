@@ -22,19 +22,30 @@ namespace Cybersecurity_ChatBot_GUI
     /// </summary>
     public partial class MainWindow : Window
     {
-        ChatBot chat = new ChatBot();
+        private ChatBot chat;
+        private readonly ReminderParser _reminderParser = new ReminderParser();
+
+        // Task creation flow state
+        private bool _isAddingTask = false;
+        private bool _awaitingTaskTitle = false;
+        private bool _awaitingTaskDescription = false;
+        private bool _awaitingTaskReminder = false;
+
+        private string _pendingTaskTitle = "";
+        private string _pendingTaskDescription = "";
+
         public MainWindow()
         {
             InitializeComponent();
             LoadAsciiArt();
 
-           
+            string connectionString = "server=localhost;port=3306;database=ChatbotDB;uid=root;pwd=;";
+            TaskLibrary taskLibrary = new TaskLibrary(connectionString);
+
+            chat = new ChatBot(taskLibrary);
 
             chat.PlayIntroLogic();
-
             AddBotMessage(chat.GetGreeting());
-
-
         }
 
         private void LoadAsciiArt()
@@ -47,8 +58,7 @@ namespace Cybersecurity_ChatBot_GUI
 | |   | || | /\| || |   | || (        | |         ) (   | (  \ \ | (      | (\ (         ) || (      | |      | |   | || (\ (      | |      | |      ) (     | (  \ \ | |   | |   | |     
 | )   ( || (_\ \ || (___) || (____/\  | (____/\   | |   | )___) )| (____/\| ) \ \__/\____) || (____/\| (____/\| (___) || ) \ \_____) (___   | |      | |     | )___) )| (___) |   | |     
 |/     \|(____\/_)(_______)(_______/  (_______/   \_/   |/ \___/ (_______/|/   \__/\_______)(_______/(_______/(_______)|/   \__/\_______/   )_(      \_/     |/ \___/ (_______)   )_(     
-                                                                                                                                                                                          ";
-
+";
             AsciiBox.Text = asciiArt;
         }
 
@@ -73,7 +83,6 @@ namespace Cybersecurity_ChatBot_GUI
             };
 
             bubble.Child = message;
-
             ChatPanel.Children.Add(bubble);
         }
 
@@ -98,25 +107,130 @@ namespace Cybersecurity_ChatBot_GUI
             };
 
             bubble.Child = message;
-
             ChatPanel.Children.Add(bubble);
         }
 
-
         public void SendMessage()
         {
-            string userMessage = UserInputTextBox.Text;
+            string userMessage = UserInputTextBox.Text.Trim();
 
-            if (!string.IsNullOrWhiteSpace(userMessage))
+            if (string.IsNullOrWhiteSpace(userMessage))
+                return;
+
+            AddUserMessage(userMessage);
+            UserInputTextBox.Clear();
+
+            string lowerInput = userMessage.ToLower();
+
+            // ==========================
+            // Show tasks
+            // ==========================
+            if (lowerInput == "show my tasks" || lowerInput == "show tasks")
             {
-                AddUserMessage(userMessage);
+                if (string.IsNullOrWhiteSpace(chat.CurrentUserName))
+                {
+                    AddBotMessage("Please tell me your name first before viewing tasks.");
+                    ChatScrollViewer.ScrollToEnd();
+                    return;
+                }
 
-                UserInputTextBox.Clear();
-
-                string response = chat.ProcessesInput(userMessage);
-                AddBotMessage(response);
-
+                string taskList = chat.ShowTasks(chat.CurrentUserName);
+                AddBotMessage(taskList);
                 ChatScrollViewer.ScrollToEnd();
+                return;
+            }
+
+            // ==========================
+            // Start add task flow
+            // ==========================
+            if (lowerInput == "add task")
+            {
+                if (string.IsNullOrWhiteSpace(chat.CurrentUserName))
+                {
+                    AddBotMessage("Please tell me your name first before adding tasks.");
+                    ChatScrollViewer.ScrollToEnd();
+                    return;
+                }
+
+                _isAddingTask = true;
+                _awaitingTaskTitle = true;
+                _awaitingTaskDescription = false;
+                _awaitingTaskReminder = false;
+
+                _pendingTaskTitle = "";
+                _pendingTaskDescription = "";
+
+                AddBotMessage("Sure. What is the task title?");
+                ChatScrollViewer.ScrollToEnd();
+                return;
+            }
+
+            // ==========================
+            // Continue add task flow
+            // ==========================
+            if (_isAddingTask)
+            {
+                HandleTaskCreationFlow(userMessage);
+                ChatScrollViewer.ScrollToEnd();
+                return;
+            }
+
+            // ==========================
+            // Normal chatbot conversation
+            // ==========================
+            string response = chat.ProcessesInput(userMessage);
+            AddBotMessage(response);
+            ChatScrollViewer.ScrollToEnd();
+        }
+
+        private void HandleTaskCreationFlow(string userMessage)
+        {
+            if (_awaitingTaskTitle)
+            {
+                _pendingTaskTitle = userMessage;
+                _awaitingTaskTitle = false;
+                _awaitingTaskDescription = true;
+
+                AddBotMessage("Got it. Now enter a description for the task.");
+                return;
+            }
+
+            if (_awaitingTaskDescription)
+            {
+                _pendingTaskDescription = userMessage;
+                _awaitingTaskDescription = false;
+                _awaitingTaskReminder = true;
+
+                AddBotMessage("When should I remind you?\nExamples:\n- tomorrow at 18:00\n- today at 7pm\n- in 3 days");
+                return;
+            }
+
+            if (_awaitingTaskReminder)
+            {
+                ReminderParser.ReminderParseResult result = _reminderParser.ParseReminder(userMessage);
+
+                if (!result.Success)
+                {
+                    AddBotMessage(result.DisplayMessage);
+                    return;
+                }
+
+                string saveMessage = chat.AddTask(
+                    chat.CurrentUserName,
+                    _pendingTaskTitle,
+                    _pendingTaskDescription,
+                    result.ReminderDate
+                );
+
+                AddBotMessage(saveMessage + "\n" + result.DisplayMessage);
+
+                // Reset flow
+                _isAddingTask = false;
+                _awaitingTaskTitle = false;
+                _awaitingTaskDescription = false;
+                _awaitingTaskReminder = false;
+                _pendingTaskTitle = "";
+                _pendingTaskDescription = "";
             }
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace Cybersecurity_ChatBot_GUI
@@ -15,79 +16,117 @@ namespace Cybersecurity_ChatBot_GUI
             public DateTime ReminderDate { get; set; }
             public string DisplayMessage { get; set; }
         }
-    
 
-    public ReminderParseResult ParseReminder(string input)
+
+        public ReminderParseResult ParseReminder(string input)
         {
             if (string.IsNullOrWhiteSpace(input))
             {
-                return new ReminderParseResult
-                {
-                    Success = false,
-                    DisplayMessage = "Reminder text is empty."
-                };
+                return Fail("Reminder text is empty.");
             }
 
             input = input.Trim().ToLower();
 
-            // 1. tomorrow
-            if (input.Contains("tomorrow"))
-            {
-                DateTime reminderDate = DateTime.Today.AddDays(1);
+            DateTime baseDate;
 
-                return new ReminderParseResult
+            // -------------------------
+            // Determine base date
+            // -------------------------
+            if (Regex.IsMatch(input, @"\btomorrow\b"))
+            {
+                baseDate = DateTime.Today.AddDays(1);
+            }
+            else if (Regex.IsMatch(input, @"\btoday\b"))
+            {
+                baseDate = DateTime.Today;
+            }
+            else if (Regex.IsMatch(input, @"\bnext week\b"))
+            {
+                baseDate = DateTime.Today.AddDays(7);
+            }
+            else
+            {
+                Match dayMatch = Regex.Match(input, @"in\s+(\d+)\s+day[s]?");
+                if (dayMatch.Success)
                 {
-                    Success = true,
-                    ReminderDate = reminderDate,
-                    DisplayMessage = $"Reminder in 1 day: {reminderDate:dd MMM yyyy}"
-                };
+                    int days = int.Parse(dayMatch.Groups[1].Value);
+
+                    if (days < 0)
+                        return Fail("Reminder days cannot be negative.");
+
+                    baseDate = DateTime.Today.AddDays(days);
+                }
+                else
+                {
+                    return Fail("I couldn't understand the reminder date. Try 'tomorrow', 'today at 18:00', or 'in 3 days'.");
+                }
             }
 
-            // 2. today
-            if (input.Contains("today"))
-            {
-                DateTime reminderDate = DateTime.Today;
+            // -------------------------
+            // Optional time extraction
+            // Default time = 09:00
+            // Supports:
+            // at 14:30
+            // at 9:00
+            // at 7pm
+            // at 7 pm
+            // -------------------------
+            TimeSpan time = new TimeSpan(9, 0, 0);
 
-                return new ReminderParseResult
-                {
-                    Success = true,
-                    ReminderDate = reminderDate,
-                    DisplayMessage = $"Reminder today: {reminderDate:dd MMM yyyy}"
-                };
+            Match time24Match = Regex.Match(input, @"at\s+(\d{1,2}):(\d{2})");
+            Match time12Match = Regex.Match(input, @"at\s+(\d{1,2})\s*(am|pm)");
+
+            if (time24Match.Success)
+            {
+                int hour = int.Parse(time24Match.Groups[1].Value);
+                int minute = int.Parse(time24Match.Groups[2].Value);
+
+                if (hour < 0 || hour > 23 || minute < 0 || minute > 59)
+                    return Fail("Invalid time. Use a valid 24-hour time like 14:30.");
+
+                time = new TimeSpan(hour, minute, 0);
+            }
+            else if (time12Match.Success)
+            {
+                int hour = int.Parse(time12Match.Groups[1].Value);
+                string ampm = time12Match.Groups[2].Value;
+
+                if (hour < 1 || hour > 12)
+                    return Fail("Invalid time. Use a valid 12-hour time like 7pm.");
+
+                if (ampm == "pm" && hour < 12)
+                    hour += 12;
+                if (ampm == "am" && hour == 12)
+                    hour = 0;
+
+                time = new TimeSpan(hour, 0, 0);
             }
 
-            // 3. in X days
-            Match dayMatch = Regex.Match(input, @"in\s+(\d+)\s+day[s]?");
-            if (dayMatch.Success)
-            {
-                int days = int.Parse(dayMatch.Groups[1].Value);
-                DateTime reminderDate = DateTime.Today.AddDays(days);
+            DateTime reminderDate = baseDate.Date + time;
+            int daysDifference = (reminderDate.Date - DateTime.Today).Days;
 
-                return new ReminderParseResult
-                {
-                    Success = true,
-                    ReminderDate = reminderDate,
-                    DisplayMessage = $"Reminder in {days} day{(days == 1 ? "" : "s")}: {reminderDate:dd MMM yyyy}"
-                };
-            }
-
-            // 4. next week
-            if (input.Contains("next week"))
-            {
-                DateTime reminderDate = DateTime.Today.AddDays(7);
-
-                return new ReminderParseResult
-                {
-                    Success = true,
-                    ReminderDate = reminderDate,
-                    DisplayMessage = $"Reminder in 7 days: {reminderDate:dd MMM yyyy}"
-                };
-            }
+            string display;
+            if (daysDifference == 0)
+                display = $"Reminder today: {reminderDate:dd MMM yyyy HH:mm}";
+            else if (daysDifference == 1)
+                display = $"Reminder in 1 day: {reminderDate:dd MMM yyyy HH:mm}";
+            else
+                display = $"Reminder in {daysDifference} days: {reminderDate:dd MMM yyyy HH:mm}";
 
             return new ReminderParseResult
             {
+                Success = true,
+                ReminderDate = reminderDate,
+                DisplayMessage = display
+            };
+        }
+
+        private ReminderParseResult Fail(string message)
+        {
+            return new ReminderParseResult
+            {
                 Success = false,
-                DisplayMessage = "I couldn't understand the reminder date. Try phrases like 'tomorrow', 'in 2 days', or 'next week'."
+                DisplayMessage = message
             };
         }
     }
