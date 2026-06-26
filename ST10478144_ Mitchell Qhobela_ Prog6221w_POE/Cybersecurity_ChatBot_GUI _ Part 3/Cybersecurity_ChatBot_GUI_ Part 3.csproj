@@ -106,7 +106,11 @@
     </ApplicationDefinition>
     <Compile Include="ChatBot.cs" />
     <Compile Include="MemoryStore.cs" />
+    <Compile Include="Quiz.cs" />
     <Compile Include="QuizQuestions.cs" />
+    <Compile Include="QuizWindow.xaml.cs">
+      <DependentUpon>QuizWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ReminderParser.cs" />
     <Compile Include="SentimentDetector.cs" />
     <Compile Include="SplashScreen.xaml.cs">
@@ -126,6 +130,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="QuizWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="SplashScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
