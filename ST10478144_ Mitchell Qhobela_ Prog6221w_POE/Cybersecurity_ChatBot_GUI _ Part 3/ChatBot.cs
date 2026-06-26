@@ -141,7 +141,7 @@ namespace Cybersecurity_ChatBot_GUI
            _keywords.ChatbotResponds("identity");
             }
 
-            return $"What can I help you with {_memory.UserName} \n would you like to know about cybersecurity, or passwords, or phishing?";
+            return $"What can I help you with {_memory.UserName} \n would you like to know about cybersecurity, or passwords, or phishing? \n \n Or would you like to play a Cyber Security Quiz? (Yes/No)";
         }
 
         private readonly TaskLibrary _taskLibrary;

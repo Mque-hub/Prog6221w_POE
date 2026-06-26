@@ -31,6 +31,8 @@ namespace Cybersecurity_ChatBot_GUI
         private bool _awaitingTaskDescription = false;
         private bool _awaitingTaskReminder = false;
 
+        private bool _awaitingQuizResponse = false;
+
         private string _pendingTaskTitle = "";
         private string _pendingTaskDescription = "";
 
@@ -60,6 +62,12 @@ namespace Cybersecurity_ChatBot_GUI
 |/     \|(____\/_)(_______)(_______/  (_______/   \_/   |/ \___/ (_______/|/   \__/\_______)(_______/(_______/(_______)|/   \__/\_______/   )_(      \_/     |/ \___/ (_______)   )_(     
 ";
             AsciiBox.Text = asciiArt;
+        }
+
+        private void OfferQuiz()
+        {
+            AddBotMessage("Would you like to test your cyber security knowledge by playing a short quiz? (Yes/No)");
+            _awaitingQuizResponse = true;
         }
 
         private void AddBotMessage(string text)
@@ -121,6 +129,39 @@ namespace Cybersecurity_ChatBot_GUI
             UserInputTextBox.Clear();
 
             string lowerInput = userMessage.ToLower();
+
+            if (_awaitingQuizResponse)
+            {
+                if (lowerInput == "yes" || lowerInput == "y")
+                {
+                    _awaitingQuizResponse = true;
+
+                    AddBotMessage("Great! Let's start the quiz.");
+
+                    QuizWindow quiz = new QuizWindow();
+
+                    this.Hide();
+
+                    quiz.ShowDialog();
+
+                    this.Show();
+
+                    AddBotMessage("Welcome back! How else can I help you today?");
+
+                    ChatScrollViewer.ScrollToEnd();
+                    return;
+                }
+
+                if (lowerInput == "no" || lowerInput == "n")
+                {
+                    _awaitingQuizResponse = false;
+
+                    AddBotMessage("No problem! What cyber security topic would you like to learn about?");
+
+                    ChatScrollViewer.ScrollToEnd();
+                    return;
+                }
+            }
 
             // ==========================
             // Show tasks
