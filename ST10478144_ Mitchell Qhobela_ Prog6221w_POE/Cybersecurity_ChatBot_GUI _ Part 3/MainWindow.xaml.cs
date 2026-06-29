@@ -24,6 +24,9 @@ namespace Cybersecurity_ChatBot_GUI
     {
         private ChatBot chat;
         private readonly ReminderParser _reminderParser = new ReminderParser();
+        private readonly Reminder_Intent_NLP_Parser _intentParser= new Reminder_Intent_NLP_Parser();
+        public ChatLogger Logger => _logger;
+        private readonly ChatLogger _logger = new ChatLogger();
 
         // Task creation flow state
         private bool _isAddingTask = false;
@@ -42,11 +45,14 @@ namespace Cybersecurity_ChatBot_GUI
         private int _taskToUpdate;
         private string _updateField = "";
 
+
+
         public MainWindow()
         {
             InitializeComponent();
             LoadAsciiArt();
 
+            // Opening the Database on MySQL for interaction between Visual Studio and MySQL
             string connectionString = "server=localhost;port=3306;database=ChatbotDB;uid=root;pwd=Student@ST10478144;";
             TaskLibrary taskLibrary = new TaskLibrary(connectionString);
 
@@ -94,6 +100,7 @@ namespace Cybersecurity_ChatBot_GUI
 
             bubble.Child = message;
             ChatPanel.Children.Add(bubble);
+            
         }
 
         private void AddUserMessage(string text)
@@ -122,6 +129,7 @@ namespace Cybersecurity_ChatBot_GUI
 
         public void SendMessage()
         {
+           
             string userMessage = UserInputTextBox.Text.Trim();
 
             if (string.IsNullOrWhiteSpace(userMessage))
@@ -130,11 +138,63 @@ namespace Cybersecurity_ChatBot_GUI
             AddUserMessage(userMessage);
             UserInputTextBox.Clear();
 
+            ReminderIntentModel intent = _intentParser.Parse(userMessage);
+
+           
             string lowerInput = userMessage.ToLower();
 
-            
+            if (intent.IsReminder)
+            {
+                // Store the extracted information
+                _pendingTaskTitle = intent.Title;
+                _pendingTaskDescription = intent.Description;
+
+                // If no reminder date was found, ask for one
+                if (string.IsNullOrWhiteSpace(intent.ReminderText))
+                {
+                    _isAddingTask = true;
+
+                    _awaitingTaskTitle = false;
+                    _awaitingTaskDescription = false;
+                    _awaitingTaskReminder = true;
+
+                    AddBotMessage(
+                        "Sure! When should I remind you?\n\n" +
+                        "Examples:\n" +
+                        "- tomorrow\n" +
+                        "- today at 7pm\n" +
+                        "- next Monday\n" +
+                        "- in 3 days");
+
+                    ChatScrollViewer.ScrollToEnd();
+                    return;
+                }
+
+                // A reminder date was already included
+                ReminderParser.ReminderParseResult result =
+                    _reminderParser.ParseReminder(intent.ReminderText);
+
+                if (!result.Success)
+                {
+                    AddBotMessage(result.DisplayMessage);
+                    return;
+                }
+
+                string message = chat.AddTask(
+                    chat.CurrentUserName,
+                    intent.Title,
+                    intent.Description,
+                    result.ReminderDate);
+
+                AddBotMessage(message);
+
+                ChatScrollViewer.ScrollToEnd();
+                return;
+            }
+
             if (_awaitingQuizResponse)
             {
+                chat.Logger.Record($"{chat.CurrentUserName} started the Cyber Security Quiz.");
                 if (lowerInput == "yes" || lowerInput == "y")
                 {
                     _awaitingQuizResponse = true;
@@ -166,9 +226,9 @@ namespace Cybersecurity_ChatBot_GUI
                 }
             }
 
-            // ==========================
-            // Show tasks
-            // ==========================
+            
+            //If condition to Show tasks
+            
             if (lowerInput == "show my tasks" || lowerInput == "show tasks")
             {
                 if (string.IsNullOrWhiteSpace(chat.CurrentUserName))
@@ -184,10 +244,15 @@ namespace Cybersecurity_ChatBot_GUI
                 return;
             }
 
-            // ==========================
-            // Start add task flow
-            // ==========================
-            if (lowerInput == "add task")
+            
+            // beginning a add task flow
+           
+            if (lowerInput.Contains("add a task")||
+                 lowerInput.Contains("create a task") ||
+                 lowerInput.Contains("create a new task")||
+                 lowerInput.Contains("add a new task")||
+                  lowerInput.Contains("setup a new task")||
+                   lowerInput.Contains("setup a task"))
             {
                 if (string.IsNullOrWhiteSpace(chat.CurrentUserName))
                 {
@@ -209,9 +274,8 @@ namespace Cybersecurity_ChatBot_GUI
                 return;
             }
 
-            // ==========================
-            // Continue add task flow
-            // ==========================
+            // Continuing add task flow
+            
             if (_isAddingTask)
             {
                 HandleTaskCreationFlow(userMessage);
@@ -285,9 +349,16 @@ namespace Cybersecurity_ChatBot_GUI
                 return;
             }
 
-            // ==========================
+            if (lowerInput == "activity log" ||
+                lowerInput == "show activity log")
+            {
+                AddBotMessage(chat.Logger.DisplayLog());
+                ChatScrollViewer.ScrollToEnd();
+                return;
+            }
+
+            
             // Normal chatbot conversation
-            // ==========================
             string response = chat.ProcessesInput(userMessage);
             AddBotMessage(response);
             if (response.Contains("Cyber Security Quiz"))
@@ -297,6 +368,7 @@ namespace Cybersecurity_ChatBot_GUI
             ChatScrollViewer.ScrollToEnd();
         }
 
+        // Method on maintaining user interaction whilst creating a task
         private void HandleTaskCreationFlow(string userMessage)
         {
             if (_awaitingTaskTitle)
@@ -348,6 +420,7 @@ namespace Cybersecurity_ChatBot_GUI
             }
         }
 
+        //// Method on maintaining user interaction whilst updating a task title, description, and reminder
         private void HandleTaskUpdateFlow(string userMessage)
         {
             if (_awaitingUpdateChoice)
@@ -372,11 +445,6 @@ namespace Cybersecurity_ChatBot_GUI
                     case "3":
                     case "reminder":
                         AddBotMessage("Enter the new reminder date:");
-                        break;
-
-                    case "4":
-                    case "status":
-                        AddBotMessage("Should the task be Completed or Pending?");
                         break;
 
                     default:
@@ -425,11 +493,13 @@ namespace Cybersecurity_ChatBot_GUI
             }
         }
 
+        // chatbot Send button Method 
         private void SendButton_Click(object sender, RoutedEventArgs e)
         {
             SendMessage();
         }
 
+        // Method for using enter to send a message
         private void UserInputTextBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)

@@ -45,7 +45,8 @@ namespace Cybersecurity_ChatBot_GUI
                         "afraid",
                         "anxious",
                         "nervous",
-                        "unsafe"
+                        "unsafe",
+                        "con"
                     }
                 },
                 {

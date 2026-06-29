@@ -28,7 +28,7 @@ namespace Cybersecurity_ChatBot_GUI
         private KeywordResponder _keywords=new KeywordResponder();
         private SentimentDetector _sentiment = new SentimentDetector();
         private MemoryStore _memory=new MemoryStore();
-
+        public ChatLogger Logger => _logger;
         private ChatLogger _logger = new ChatLogger();
 
         public string CurrentUserName => _memory.UserName;
@@ -50,15 +50,18 @@ namespace Cybersecurity_ChatBot_GUI
             if (string.IsNullOrWhiteSpace(input))
                 return "Please enter something";
 
+
             string originalInput = input.Trim();
             string normalizedInput = originalInput.ToLower();
 
             Sentiment sentiment = _sentiment.Detect(normalizedInput);
             string emotionalReply = _sentiment.GetSentimentResponse(sentiment);
 
+            _logger.Record($"{_memory.UserName} asked: \"{input}\"");
+
             if (_awaitingName)
             {
-                _memory.UserName = originalInput;   // keep real formatting
+                _memory.UserName = originalInput;   // To keep real name format without converting it completely to lower cases
                 _awaitingName = false;
 
                 return $"Nice to meet you {_memory.UserName}. How are you doing today and what can I do for you?";
@@ -73,6 +76,7 @@ namespace Cybersecurity_ChatBot_GUI
                 return _memory.GetPersonalisedOpener();
             }
 
+            // IF conditions of user input regarding cyber security 
             if (normalizedInput.Contains("tell me more") ||
                 normalizedInput.Contains("explain more") ||
                 normalizedInput.Contains("more info") ||
@@ -81,7 +85,11 @@ namespace Cybersecurity_ChatBot_GUI
 
                 if (!string.IsNullOrEmpty(_lastTopic))
                 {
-                    return _keywords.GetFollowUpResponse(_lastTopic);
+                    return _keywords.GetFollowUpResponse(_lastTopic) +
+
+               $"\n\nWhat else would you like to learn about, {_memory.UserName}?" +
+               "\nYou can also ask about passwords, phishing, privacy or identity theft." +
+           "\n\n Or would you like to test your knowledge with a Cyber Security Quiz? (Yes/No)"; 
                 }
             }
 
@@ -92,7 +100,7 @@ namespace Cybersecurity_ChatBot_GUI
 
             if (normalizedInput.Contains("what can i ask you") || normalizedInput.Contains("topics"))
             {
-                return "You can ask me about topics such as:\n- " + string.Join("\n- ", _keywords.GetAllKeywords());
+                return "Ask me about topics such as:\n- " + string.Join("\n- ", _keywords.GetAllKeywords());
             }
 
             if (normalizedInput.Contains("cybersecurity"))
@@ -100,7 +108,8 @@ namespace Cybersecurity_ChatBot_GUI
                 _lastTopic = "cybersecurity";
 
                 return emotionalReply + "\n\n" +
-           _keywords.ChatbotResponds("cybersecurity");
+           _keywords.ChatbotResponds("cybersecurity") +
+           "\n\nWould you like to test your knowledge with a Cyber Security Quiz? (Yes/No)"; 
             }
 
             if (normalizedInput.Contains("phishing"))
@@ -108,7 +117,8 @@ namespace Cybersecurity_ChatBot_GUI
                 _lastTopic = "phishing";
 
                 return emotionalReply + "\n\n" +
-           _keywords.ChatbotResponds("phishing");
+           _keywords.ChatbotResponds("phishing") +
+           "\n\nWould you like to test your knowledge with a Cyber Security Quiz? (Yes/No)"; 
             }
 
             if (normalizedInput.Contains("password"))
@@ -116,7 +126,8 @@ namespace Cybersecurity_ChatBot_GUI
                 _lastTopic = "password";
 
                 return emotionalReply + "\n\n" +
-           _keywords.ChatbotResponds("password");
+           _keywords.ChatbotResponds("password") +
+           "\n\nWould you like to test your knowledge with a Cyber Security Quiz? (Yes/No)"; 
             }
 
             if (normalizedInput.Contains("scam"))
@@ -124,7 +135,8 @@ namespace Cybersecurity_ChatBot_GUI
                 _lastTopic = "scam";
 
                 return emotionalReply + "\n\n" +
-           _keywords.ChatbotResponds("scam");
+           _keywords.ChatbotResponds("scam") +
+           "\n\nWould you like to test your knowledge with a Cyber Security Quiz? (Yes/No)"; 
             }
 
             if (normalizedInput.Contains("privacy"))
@@ -132,7 +144,8 @@ namespace Cybersecurity_ChatBot_GUI
                 _lastTopic = "privacy";
 
                 return emotionalReply + "\n\n" +
-           _keywords.ChatbotResponds("privacy");
+           _keywords.ChatbotResponds("privacy") +
+           "\n\nWould you like to test your knowledge with a Cyber Security Quiz? (Yes/No)"; 
             }
 
             if (normalizedInput.Contains("identity"))
@@ -140,18 +153,23 @@ namespace Cybersecurity_ChatBot_GUI
                 _lastTopic = "identity";
 
                 return emotionalReply + "\n\n" +
-           _keywords.ChatbotResponds("identity");
+           _keywords.ChatbotResponds("identity") +
+           "\n\nWould you like to test your knowledge with a Cyber Security Quiz? (Yes/No)"; 
             }
 
-            return $"What can I help you with {_memory.UserName} \n would you like to know about cybersecurity, or passwords, or phishing? \n \n Or would you like to play a Cyber Security Quiz? (Yes/No)";
+            return $"What else would you like to learn about, {_memory.UserName}?";
         }
 
+        // Calling the Task Library class
         private readonly TaskLibrary _taskLibrary;
-
+        
+        // Secondary ChatBot constructor 
         public ChatBot(TaskLibrary taskLibrary)
         {
             _taskLibrary = taskLibrary;
         }
+
+        // Method to Adding tasks to the database
         public string AddTask(string username, string title, string description, DateTime reminderDate)
         {
             TaskItem task = new TaskItem
@@ -172,39 +190,47 @@ namespace Cybersecurity_ChatBot_GUI
                    $"Reminder: {task.ReminderDate:dd MMM yyyy HH:mm}";
         }
 
+        // Method for deleting the task
         public string DeleteTask(int taskId)
         {
             _taskLibrary.DeleteTask(taskId);
+            _logger.Record($"{CurrentUserName} deleted task {taskId}");
             return "Task deleted successfully.";
         }
 
+        // Method for indicating if the task is completed
         public string CompleteTask(int taskId)
         {
             _taskLibrary.CompleteTask(taskId);
+            _logger.Record($"{CurrentUserName} completed task {taskId}");
             return $"Task {taskId} marked as completed.";
         }
 
+        // Method for updating the task title
         public string UpdateTitle(int taskId, string newTitle)
         {
             _taskLibrary.UpdateTitle(taskId, newTitle);
-
+            _logger.Record($"{CurrentUserName} updated the title of task {taskId}");
             return "Task title updated successfully.";
         }
 
+        // Method for updating the task description
         public string UpdateDescription(int taskId, string newDescription)
         {
             _taskLibrary.UpdateDescription(taskId, newDescription);
-
+            _logger.Record($"{CurrentUserName} updated the description of task {taskId}");
             return "Task description updated successfully.";
         }
 
+        // Method for updating the task reminder
         public string UpdateReminder(int taskId, DateTime newReminder)
         {
             _taskLibrary.UpdateReminder(taskId, newReminder);
-
+            _logger.Record($"{CurrentUserName} updated the reminder of task {taskId}");
             return $"Reminder for task {taskId} updated successfully.";
         }
 
+        // Method for displaying the tasks
         public string ShowTasks(string username)
         {
             _logger.Record($"{username} viewed their task list.");

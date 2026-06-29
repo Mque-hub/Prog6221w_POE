@@ -13,6 +13,7 @@ namespace Cybersecurity_ChatBot_GUI
 
         private readonly string _connectionString;// This means it can only be accessed inside this class and assigned once
 
+        // The following methods are to create, read, update, and delete (CRUD) the MySQL database 
         public TaskLibrary(string connectionString)
         {
             _connectionString = connectionString;
@@ -142,7 +143,7 @@ VALUES (@title, @description, @reminderDate, @username)";
                 cmd.ExecuteNonQuery();
             }
         }
-
+        // Method to get and display the task data from the database
         public List<TaskItem> GetTasksByUser(string username)
         {
             List<TaskItem> tasks = new List<TaskItem>();

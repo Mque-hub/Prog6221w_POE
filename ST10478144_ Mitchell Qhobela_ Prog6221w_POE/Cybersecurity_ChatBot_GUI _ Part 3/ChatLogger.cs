@@ -8,6 +8,7 @@ namespace Cybersecurity_ChatBot_GUI
 {
     public class ChatLogger
     {
+        // Creating the Activity log list<>
         private readonly List<ActivityLog> _logs = new List<ActivityLog>();
 
         public void Record(string action)
@@ -15,22 +16,29 @@ namespace Cybersecurity_ChatBot_GUI
             _logs.Add(new ActivityLog(action));
         }
 
-        public void DisplayLog()
+        // Method for retrieving the logs
+        public List<ActivityLog> GetLogs()
+        {
+            return _logs;
+        }
+
+        // Method for displaying the logs
+        public string DisplayLog()
         {
             if (_logs.Count == 0)
+                return "No activity has been recorded.";
+
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine("========== Activity Log ==========");
+            sb.AppendLine();
+
+            foreach (ActivityLog log in _logs)
             {
-                Console.WriteLine("No actions have been recorded.");
-                return;
+                sb.AppendLine(log.ToString());
             }
 
-            Console.WriteLine("\n=== Chat Log ===");
-
-            foreach (var log in _logs)
-            {
-                Console.WriteLine(log);
-            }
-
-            Console.WriteLine("================\n");
+            return sb.ToString();
         }
     }
 }

@@ -10,6 +10,7 @@ namespace Cybersecurity_ChatBot_GUI
 {
     public class ReminderParser
     {
+        // Method for Reminder getters and setters
         public class ReminderParseResult
         {
             public bool Success { get; set; }
@@ -17,7 +18,7 @@ namespace Cybersecurity_ChatBot_GUI
             public string DisplayMessage { get; set; }
         }
 
-
+        // Method of an exception incase of an empty or incomplete task request
         public ReminderParseResult ParseReminder(string input)
         {
             if (string.IsNullOrWhiteSpace(input))
@@ -29,9 +30,7 @@ namespace Cybersecurity_ChatBot_GUI
 
             DateTime baseDate;
 
-            // -------------------------
-            // Determine base date
-            // -------------------------
+            // Regex is used to determine base dates
             if (Regex.IsMatch(input, @"\btomorrow\b"))
             {
                 baseDate = DateTime.Today.AddDays(1);
@@ -62,15 +61,7 @@ namespace Cybersecurity_ChatBot_GUI
                 }
             }
 
-            // -------------------------
-            // Optional time extraction
-            // Default time = 09:00
-            // Supports:
-            // at 14:30
-            // at 9:00
-            // at 7pm
-            // at 7 pm
-            // -------------------------
+            // The following conditions are to indentify if the user types e.g., 12 pm or 12:00 and return the time in the task display 
             TimeSpan time = new TimeSpan(9, 0, 0);
 
             Match time24Match = Regex.Match(input, @"at\s+(\d{1,2}):(\d{2})");
@@ -120,6 +111,7 @@ namespace Cybersecurity_ChatBot_GUI
                 DisplayMessage = display
             };
         }
+
 
         private ReminderParseResult Fail(string message)
         {

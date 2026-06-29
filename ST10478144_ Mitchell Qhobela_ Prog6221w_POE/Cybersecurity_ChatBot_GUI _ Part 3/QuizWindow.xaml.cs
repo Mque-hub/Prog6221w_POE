@@ -20,6 +20,7 @@ namespace Cybersecurity_ChatBot_GUI
     /// </summary>
     public partial class QuizWindow : Window
     {
+        // Calling Quiz class for QuizWindow content
         private Quiz quiz = new Quiz();
 
         RadioButton[] buttons;
@@ -28,8 +29,9 @@ namespace Cybersecurity_ChatBot_GUI
         {
             InitializeComponent();
 
+            // Calling the ChatLogger class that records activity log
             ChatLogger logger = new ChatLogger();
-
+            // Assigning the logger in Quiz Class constructor
             quiz = new Quiz(logger);
 
             buttons = new RadioButton[]
@@ -43,8 +45,7 @@ namespace Cybersecurity_ChatBot_GUI
             DisplayQuestion();
         }
 
-        //-----------------------------------------------------
-
+        // Method for displaying questions
         private void DisplayQuestion()
         {
             QuizQuestions q = quiz.GetCurrentQuestion();
@@ -73,8 +74,7 @@ namespace Cybersecurity_ChatBot_GUI
             btnNext.Visibility = Visibility.Collapsed;
         }
 
-        //-----------------------------------------------------
-
+        // Method for when the user is selecting the answer 
         private int GetSelectedAnswer()
         {
             for (int i = 0; i < buttons.Length; i++)
@@ -85,9 +85,8 @@ namespace Cybersecurity_ChatBot_GUI
 
             return -1;
         }
-
-        //-----------------------------------------------------
-
+         
+        // Method for submit button
         private void btnSubmit_Click(object sender, RoutedEventArgs e)
         {
             int answer = GetSelectedAnswer();
@@ -116,8 +115,8 @@ namespace Cybersecurity_ChatBot_GUI
             btnNext.Visibility = Visibility.Visible;
         }
 
-        //-----------------------------------------------------
-
+        
+        // Method for next button
         private void btnNext_Click(object sender, RoutedEventArgs e)
         {
             if (quiz.NextQuestion())
@@ -126,10 +125,33 @@ namespace Cybersecurity_ChatBot_GUI
             }
             else
             {
-                MessageBox.Show(quiz.ShowResults(), "Quiz Results");
-
-                Close();
+                ShowResultsScreen();
             }
+        }
+
+        // Method for close button
+        private void CloseQuiz_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        // method for displaying the results screen
+        private void ShowResultsScreen()
+        {
+            QuizPanel.Visibility = Visibility.Collapsed;
+
+            ResultsPanel.Visibility = Visibility.Visible;
+
+            txtFinalScore.Text =
+                $"Score: {quiz.Score} / {quiz.Questions.Count}";
+
+            txtStatistics.Text =
+                $"Correct Answers: {quiz.CorrectQuestions.Count}\n\n" +
+                $"Incorrect Answers: {quiz.WrongQuestions.Count}";
+
+            txtFinalComment.Text = quiz.GetFeedback();
+
+            quiz.Logger.Record($"Quiz completed. Score: {quiz.Score}/{quiz.Questions.Count}");
         }
     }
 }

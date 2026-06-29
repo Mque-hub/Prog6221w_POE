@@ -8,88 +8,129 @@
         ResizeMode="NoResize"
         Background="#F5F5F5">
 
-    <Grid Margin="30">
+    <Border Background="White"
+        CornerRadius="10"
+        Padding="25"
+        BorderBrush="LightGray"
+        BorderThickness="1">
 
-        <Border Background="White"
-                CornerRadius="10"
-                Padding="25"
-                BorderBrush="LightGray"
-                BorderThickness="1">
+        <Grid>
 
-            <StackPanel>
+            <!-- ****************** QUIZ PANEL ********************** -->
+
+            <StackPanel x:Name="QuizPanel">
 
                 <!-- Quiz Title -->
-                <TextBlock Text=" Cyber Security Knowledge Quiz"
-                           FontSize="28"
-                           FontWeight="Bold"
-                           HorizontalAlignment="Center"
-                           Margin="0,0,0,20"/>
+                <TextBlock Text="Cyber Security Knowledge Quiz"
+                       FontSize="28"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,20"/>
 
                 <!-- Question Number -->
                 <TextBlock x:Name="txtQuestionNumber"
-                           FontSize="16"
-                           FontWeight="Bold"
-                           Foreground="Gray"
-                           Margin="0,0,0,15"/>
+                       FontSize="16"
+                       FontWeight="Bold"
+                       Foreground="Gray"
+                       Margin="0,0,0,15"/>
 
                 <!-- Question -->
                 <TextBlock x:Name="txtQuestion"
-                           FontSize="24"
-                           FontWeight="SemiBold"
-                           TextWrapping="Wrap"
-                           Margin="0,0,0,25"/>
+                       FontSize="24"
+                       FontWeight="SemiBold"
+                       TextWrapping="Wrap"
+                       Margin="0,0,0,25"/>
 
                 <!-- Answers -->
                 <RadioButton x:Name="rb1"
-                             FontSize="18"
-                             Margin="0,8"/>
+                         FontSize="18"
+                         Margin="0,8"/>
 
                 <RadioButton x:Name="rb2"
-                             FontSize="18"
-                             Margin="0,8"/>
+                         FontSize="18"
+                         Margin="0,8"/>
 
                 <RadioButton x:Name="rb3"
-                             FontSize="18"
-                             Margin="0,8"/>
+                         FontSize="18"
+                         Margin="0,8"/>
 
                 <RadioButton x:Name="rb4"
-                             FontSize="18"
-                             Margin="0,8"/>
+                         FontSize="18"
+                         Margin="0,8"/>
 
-                <!-- Submit Button -->
+                <!-- Submit -->
                 <Button x:Name="btnSubmit"
-                        Content="Submit Answer"
-                        Width="170"
-                        Height="40"
-                        Margin="0,30,0,15"
-                        HorizontalAlignment="Left"
-                        Click="btnSubmit_Click"/>
+                    Content="Submit Answer"
+                    Width="170"
+                    Height="40"
+                    Margin="0,30,0,15"
+                    HorizontalAlignment="Left"
+                    Click="btnSubmit_Click"/>
 
                 <!-- Feedback -->
                 <Border Background="#EEF8EE"
-                        BorderBrush="LightGreen"
-                        BorderThickness="1"
-                        CornerRadius="5"
-                        Padding="10">
+                    BorderBrush="LightGreen"
+                    BorderThickness="1"
+                    CornerRadius="5"
+                    Padding="10">
 
                     <TextBlock x:Name="txtFeedback"
-                               FontSize="16"
-                               TextWrapping="Wrap"/>
+                           FontSize="16"
+                           TextWrapping="Wrap"/>
+
                 </Border>
 
-                <!-- Next Button -->
+                <!-- Next -->
                 <Button x:Name="btnNext"
-                        Content="Next Question"
-                        Width="170"
-                        Height="40"
-                        Margin="0,20,0,0"
-                        HorizontalAlignment="Right"
-                        Visibility="Collapsed"
-                        Click="btnNext_Click"/>
+                    Content="Next Question"
+                    Width="170"
+                    Height="40"
+                    Margin="0,20,0,0"
+                    HorizontalAlignment="Right"
+                    Visibility="Collapsed"
+                    Click="btnNext_Click"/>
 
             </StackPanel>
 
-        </Border>
+            <!-- **************** RESULTS PANEL ****************** -->
 
-    </Grid>
+            <StackPanel x:Name="ResultsPanel"
+                    Visibility="Collapsed">
+
+                <TextBlock Text="Quiz Complete!"
+                       FontSize="30"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"
+                       Margin="0,20"/>
+
+                <TextBlock x:Name="txtFinalScore"
+                       FontSize="26"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"
+                       Margin="0,20"/>
+
+                <TextBlock x:Name="txtStatistics"
+                       FontSize="18"
+                       TextAlignment="Center"
+                       Margin="0,20"/>
+
+                <TextBlock x:Name="txtFinalComment"
+                       FontSize="20"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"
+                       Margin="20"/>
+
+                <Button Content="Close Quiz"
+                    Width="180"
+                    Height="40"
+                    HorizontalAlignment="Center"
+                    Click="CloseQuiz_Click"/>
+
+            </StackPanel>
+
+        </Grid>
+
+    </Border>
+
+    
 </Window>

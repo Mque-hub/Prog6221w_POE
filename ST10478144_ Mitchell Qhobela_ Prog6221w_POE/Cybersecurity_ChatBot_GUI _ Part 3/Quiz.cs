@@ -8,6 +8,8 @@ namespace Cybersecurity_ChatBot_GUI
 {
     public class Quiz
     {
+        // Class Declarations and initializations 
+
         public List<QuizQuestions> Questions = new List<QuizQuestions>();
 
         public List<QuizQuestions> CorrectQuestions = new List<QuizQuestions>();
@@ -19,12 +21,14 @@ namespace Cybersecurity_ChatBot_GUI
         public int Score = 0;
 
         private readonly ChatLogger _logger;
+        public ChatLogger Logger => _logger;
 
         public Quiz()
         {
             LoadQuestions();
         }
 
+        // Quiz Constructor
         public Quiz(ChatLogger logger)
         {
             _logger = logger;
@@ -34,6 +38,7 @@ namespace Cybersecurity_ChatBot_GUI
             _logger.Record("Quiz started.");
         }
 
+        // Method for loading methods, which contains the quiz questions 
         private void LoadQuestions()
         {
             Questions.Add(new QuizQuestions
@@ -179,12 +184,14 @@ namespace Cybersecurity_ChatBot_GUI
                 Explanation = " Awareness training helps prevents social engineering , a common cybercriminal strategy"
             });
         }
-
+        
+        // Method for Displaying individual questions 
         public QuizQuestions GetCurrentQuestion()
         {
             return Questions[CurrentQuestion];
         }
 
+        // Method to verify and confirm the answer
         public bool CheckAnswer(int selectedAnswer)
         {
             QuizQuestions q = Questions[CurrentQuestion];
@@ -200,6 +207,7 @@ namespace Cybersecurity_ChatBot_GUI
             return false;
         }
 
+        // Method for moving to the next question whilst counting the questions left
         public bool NextQuestion()
         {
             CurrentQuestion++;
@@ -207,39 +215,27 @@ namespace Cybersecurity_ChatBot_GUI
             return CurrentQuestion < Questions.Count;
         }
 
-        public string ShowResults()
+        //Method for results feedback
+        public string GetFeedback()
         {
-            string feedback;
-
             if (Score == Questions.Count)
-            {
-                feedback = " Perfect! You are becoming a cyber security master";
-            }
-            else if (Score >= 7)
-            {
-                feedback = " Excellent, you are a fast learner ";
-            }
-            else if (Score >= 5)
-            {
-                feedback = " Good job! Keep practicing.";
-            }
-            else if (Score >= 3)
-            {
-                feedback = " Don't give up. Keep learning!";
-            }
-            else
-            {
-                feedback = " Time to lock in and study";
-            }
+                return " Perfect! You are becoming a cyber security master.";
 
-            _logger.Record($"Quiz completed. Score: {Score}/{Questions.Count}");
+            if (Score >= 7)
+                return " Excellent! You are a fast learner.";
 
-            return
-                "Quiz Finished!\n\n" +
-                "Score: " + Score + " / " + Questions.Count +
-                "\n\nCorrect Answers: " + CorrectQuestions.Count +
-                "\nIncorrect Answers: " + WrongQuestions.Count +
-                "\n\n" + feedback;
+            if (Score >= 5)
+                return " Good job! Keep practising.";
+
+            if (Score >= 3)
+                return " Don't give up. Keep learning!";
+
+            return " Time to lock in and study cybersecurity.";
+
+            
         }
+
+        
+        
     }
 }
