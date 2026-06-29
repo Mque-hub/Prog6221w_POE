@@ -39,7 +39,7 @@ namespace Cybersecurity_ChatBot_GUI
         { "password", new List<string>()
 
             {
-                "Having a strong password will protect you devices from cybercriminals and also any pesons who has access to you physical device location",
+                "Having a strong password will protect your devices from cybercriminals and also any pesons who has access to your physical device location",
                 " To always ensure that your password is strong it must contain at least: " +
                         "\n - 1 number" +
                         "\n - 1 Capital letter" +

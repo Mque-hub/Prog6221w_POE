@@ -349,8 +349,8 @@ namespace Cybersecurity_ChatBot_GUI
                 return;
             }
 
-            if (lowerInput == "activity log" ||
-                lowerInput == "show activity log")
+            if (lowerInput.Contains("activity log")||
+                lowerInput.Contains ("show me the activity log"))
             {
                 AddBotMessage(chat.Logger.DisplayLog());
                 ChatScrollViewer.ScrollToEnd();
