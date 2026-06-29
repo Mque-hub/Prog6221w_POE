@@ -47,7 +47,7 @@ namespace Cybersecurity_ChatBot_GUI
                     "D) Ignore the email"
                 },
                 CorrectAnswer = 2,
-                Explanation = "Your correct! Reporting phishing helps prevent scams"
+                Explanation = " Reporting phishing helps prevent scams"
             });
 
             Questions.Add(new QuizQuestions
@@ -61,7 +61,7 @@ namespace Cybersecurity_ChatBot_GUI
                     "D) None of the above",
                 },
                 CorrectAnswer = 0,
-                Explanation = "Correct! MFA (multi-factor authentication) provides an extra layer of protection, good job"
+                Explanation = " MFA (multi-factor authentication) provides an extra layer of protection, good job"
             });
 
             Questions.Add(new QuizQuestions
@@ -88,7 +88,7 @@ namespace Cybersecurity_ChatBot_GUI
                     "D) All of the above"
                 },
                 CorrectAnswer = 1,
-                Explanation = "Correct! A strong and complex password will make it hard for cybercriminals to hack you"
+                Explanation = "A strong and complex password will make it hard for cybercriminals to hack you"
             });
 
             Questions.Add(new QuizQuestions
@@ -102,7 +102,7 @@ namespace Cybersecurity_ChatBot_GUI
                                     
                 },
                 CorrectAnswer = 1,
-                Explanation = "Correct! Cybercriminals take advantage of ignorant, and vulnerable users"
+                Explanation = "Human error... Cybercriminals take advantage of ignorant, and vulnerable users"
             });
 
             Questions.Add(new QuizQuestions
@@ -146,7 +146,7 @@ namespace Cybersecurity_ChatBot_GUI
 
                 },
                 CorrectAnswer = 0,
-                Explanation = " Correct! Hackers sometimes locks the victim out of the computer or device interface entirely, blocking basic access and demanding money!"
+                Explanation = " Hackers sometimes locks the victim out of the computer or device interface entirely, blocking basic access and demanding money!"
             });
 
 
@@ -176,7 +176,7 @@ namespace Cybersecurity_ChatBot_GUI
                     
                 },
                 CorrectAnswer = 2,
-                Explanation = "Correct! Awareness training helps prevents social engineering , a common cybercriminal strategy"
+                Explanation = " Awareness training helps prevents social engineering , a common cybercriminal strategy"
             });
         }
 

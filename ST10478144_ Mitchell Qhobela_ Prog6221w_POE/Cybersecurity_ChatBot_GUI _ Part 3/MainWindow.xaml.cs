@@ -279,7 +279,7 @@ namespace Cybersecurity_ChatBot_GUI
                 }
                 else
                 {
-                    AddBotMessage("Example: update task 4");
+                    AddBotMessage("Example: update task 4, remember to use task IDs");
                 }
 
                 return;

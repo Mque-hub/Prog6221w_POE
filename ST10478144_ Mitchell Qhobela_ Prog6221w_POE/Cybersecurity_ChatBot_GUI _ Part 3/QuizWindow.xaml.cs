@@ -28,6 +28,10 @@ namespace Cybersecurity_ChatBot_GUI
         {
             InitializeComponent();
 
+            ChatLogger logger = new ChatLogger();
+
+            quiz = new Quiz(logger);
+
             buttons = new RadioButton[]
             {
                 rb1,

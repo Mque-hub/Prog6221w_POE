@@ -114,6 +114,7 @@
       <DependentUpon>QuizWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ReminderParser.cs" />
+    <Compile Include="Reminder_Intent_NLP_Parser.cs" />
     <Compile Include="SentimentDetector.cs" />
     <Compile Include="SplashScreen.xaml.cs">
       <DependentUpon>SplashScreen.xaml</DependentUpon>
