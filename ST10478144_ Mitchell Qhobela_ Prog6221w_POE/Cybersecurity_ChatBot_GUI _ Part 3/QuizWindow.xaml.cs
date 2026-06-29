@@ -100,11 +100,11 @@ namespace Cybersecurity_ChatBot_GUI
 
             if (correct)
             {
-                txtFeedback.Text = "✔ Correct!\n" + q.Explanation;
+                txtFeedback.Text = " Correct!\n" + q.Explanation;
             }
             else
             {
-                txtFeedback.Text = "✘ Incorrect!\n" + q.Explanation;
+                txtFeedback.Text = " Incorrect!\n" + q.Explanation;
             }
 
             btnSubmit.IsEnabled = false;

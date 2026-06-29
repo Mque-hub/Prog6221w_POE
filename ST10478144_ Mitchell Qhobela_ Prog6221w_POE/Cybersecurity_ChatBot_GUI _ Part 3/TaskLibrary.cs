@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Cybersecurity_ChatBot_GUI
 {
@@ -57,21 +58,99 @@ VALUES (@title, @description, @reminderDate, @username)";
 
             {
 
-                throw new Exception("Database save failed: " + ex.Message);
+                MessageBox.Show(ex.ToString());
+
+                throw;
 
             }
 
+        }
+
+        public void DeleteTask(int taskId)
+        {
+            string query = "DELETE FROM Tasks WHERE Id = @id";
+
+            using (MySqlConnection conn = new MySqlConnection(_connectionString))
+            using (MySqlCommand cmd = new MySqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@id", taskId);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public void CompleteTask(int taskId)
+        {
+            string query = "UPDATE Tasks SET IsCompleted = TRUE WHERE Id = @id";
+
+            using (MySqlConnection conn = new MySqlConnection(_connectionString))
+            using (MySqlCommand cmd = new MySqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@id", taskId);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public void UpdateTitle(int taskId, string newTitle)
+        {
+            string query = @"UPDATE Tasks
+                     SET TaskTitle = @title
+                     WHERE Id = @id";
+
+            using (MySqlConnection conn = new MySqlConnection(_connectionString))
+            using (MySqlCommand cmd = new MySqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@title", newTitle);
+                cmd.Parameters.AddWithValue("@id", taskId);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public void UpdateDescription(int taskId, string newDescription)
+        {
+            string query = @"UPDATE Tasks
+                     SET Description = @description
+                     WHERE Id = @id";
+
+            using (MySqlConnection conn = new MySqlConnection(_connectionString))
+            using (MySqlCommand cmd = new MySqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@description", newDescription);
+                cmd.Parameters.AddWithValue("@id", taskId);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public void UpdateReminder(int taskId, DateTime newReminder)
+        {
+            string query = @"UPDATE Tasks
+                     SET ReminderDate = @reminder
+                     WHERE Id = @id";
+
+            using (MySqlConnection conn = new MySqlConnection(_connectionString))
+            using (MySqlCommand cmd = new MySqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@id", taskId);
+                cmd.Parameters.AddWithValue("@reminder", newReminder);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
         }
 
         public List<TaskItem> GetTasksByUser(string username)
         {
             List<TaskItem> tasks = new List<TaskItem>();
 
-            string query = @"SELECT Id, TaskTitle, Description, ReminderDate, Username
-                         FROM Tasks
-                         WHERE Username = @username
-                         ORDER BY ReminderDate";
-
+            string query = @"SELECT Id, TaskTitle, Description, ReminderDate, Username,IsCompleted
+                 FROM Tasks
+                 WHERE Username = @username
+                 ORDER BY ReminderDate";
             using (MySqlConnection conn = new MySqlConnection(_connectionString))
             using (MySqlCommand cmd = new MySqlCommand(query, conn))
             {
@@ -89,7 +168,8 @@ VALUES (@title, @description, @reminderDate, @username)";
                             TaskTitle = reader.GetString("TaskTitle"),
                             Description = reader.GetString("Description"),
                             ReminderDate = reader.GetDateTime("ReminderDate"),
-                            Username = reader.GetString("Username")
+                            Username = reader.GetString("Username"),
+                            IsCompleted = reader.GetBoolean("IsCompleted")
                         });
                     }
                 }
@@ -105,6 +185,7 @@ VALUES (@title, @description, @reminderDate, @username)";
         public string TaskTitle { get; set; }
         public string Description { get; set; }
         public DateTime ReminderDate { get; set; }
-        public string Username { get; set; }   // optional if tasks belong to a user
+        public string Username { get; set; }
+        public bool IsCompleted { get; set; }
     }
 }

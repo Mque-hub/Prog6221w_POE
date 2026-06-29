@@ -35,13 +35,19 @@ namespace Cybersecurity_ChatBot_GUI
 
         private string _pendingTaskTitle = "";
         private string _pendingTaskDescription = "";
+        private bool _isUpdatingTask = false;
+        private bool _awaitingUpdateChoice = false;
+        private bool _awaitingNewValue = false;
+
+        private int _taskToUpdate;
+        private string _updateField = "";
 
         public MainWindow()
         {
             InitializeComponent();
             LoadAsciiArt();
 
-            string connectionString = "server=localhost;port=3306;database=ChatbotDB;uid=root;pwd=;";
+            string connectionString = "server=localhost;port=3306;database=ChatbotDB;uid=root;pwd=Student@ST10478144;";
             TaskLibrary taskLibrary = new TaskLibrary(connectionString);
 
             chat = new ChatBot(taskLibrary);
@@ -64,11 +70,7 @@ namespace Cybersecurity_ChatBot_GUI
             AsciiBox.Text = asciiArt;
         }
 
-        private void OfferQuiz()
-        {
-            AddBotMessage("Would you like to test your cyber security knowledge by playing a short quiz? (Yes/No)");
-            _awaitingQuizResponse = true;
-        }
+       
 
         private void AddBotMessage(string text)
         {
@@ -130,6 +132,7 @@ namespace Cybersecurity_ChatBot_GUI
 
             string lowerInput = userMessage.ToLower();
 
+            
             if (_awaitingQuizResponse)
             {
                 if (lowerInput == "yes" || lowerInput == "y")
@@ -216,11 +219,81 @@ namespace Cybersecurity_ChatBot_GUI
                 return;
             }
 
+            if (_isUpdatingTask)
+            {
+                HandleTaskUpdateFlow(userMessage);
+                ChatScrollViewer.ScrollToEnd();
+                return;
+            }
+
+            if (lowerInput.StartsWith("delete task"))
+            {
+                string[] parts = lowerInput.Split(' ');
+
+                if (parts.Length == 3 && int.TryParse(parts[2], out int taskId))
+                {
+                    AddBotMessage(chat.DeleteTask(taskId));
+                }
+                else
+                {
+                    AddBotMessage("Please enter the task ID. Example: delete task 3");
+                }
+
+                ChatScrollViewer.ScrollToEnd();
+                return;
+            }
+
+            if (lowerInput.StartsWith("complete task"))
+            {
+                string[] parts = lowerInput.Split(' ');
+
+                if (parts.Length == 3 && int.TryParse(parts[2], out int taskId))
+                {
+                    AddBotMessage(chat.CompleteTask(taskId));
+                }
+                else
+                {
+                    AddBotMessage("Please enter a valid task ID. Example: complete task 2");
+                }
+
+                ChatScrollViewer.ScrollToEnd();
+                return;
+            }
+
+            if (lowerInput.StartsWith("update task"))
+            {
+                string[] parts = lowerInput.Split(' ');
+
+                if (parts.Length == 3 && int.TryParse(parts[2], out int taskId))
+                {
+                    _isUpdatingTask = true;
+                    _awaitingUpdateChoice = true;
+                    _taskToUpdate = taskId;
+
+                    AddBotMessage(@"What would you like to update?
+
+                    1. Title
+                    2. Description
+                    3. Reminder
+                     ");
+                }
+                else
+                {
+                    AddBotMessage("Example: update task 4");
+                }
+
+                return;
+            }
+
             // ==========================
             // Normal chatbot conversation
             // ==========================
             string response = chat.ProcessesInput(userMessage);
             AddBotMessage(response);
+            if (response.Contains("Cyber Security Quiz"))
+            {
+                _awaitingQuizResponse = true;
+            }
             ChatScrollViewer.ScrollToEnd();
         }
 
@@ -272,6 +345,83 @@ namespace Cybersecurity_ChatBot_GUI
                 _awaitingTaskReminder = false;
                 _pendingTaskTitle = "";
                 _pendingTaskDescription = "";
+            }
+        }
+
+        private void HandleTaskUpdateFlow(string userMessage)
+        {
+            if (_awaitingUpdateChoice)
+            {
+                _updateField = userMessage.ToLower();
+
+                _awaitingUpdateChoice = false;
+                _awaitingNewValue = true;
+
+                switch (_updateField)
+                {
+                    case "1":
+                    case "title":
+                        AddBotMessage("Enter the new title:");
+                        break;
+
+                    case "2":
+                    case "description":
+                        AddBotMessage("Enter the new description:");
+                        break;
+
+                    case "3":
+                    case "reminder":
+                        AddBotMessage("Enter the new reminder date:");
+                        break;
+
+                    case "4":
+                    case "status":
+                        AddBotMessage("Should the task be Completed or Pending?");
+                        break;
+
+                    default:
+                        AddBotMessage("Please choose 1-4.");
+                        _awaitingUpdateChoice = true;
+                        _awaitingNewValue = false;
+                        break;
+                }
+
+                return;
+            }
+
+            if (_awaitingNewValue)
+            {
+                if (_updateField == "1" || _updateField == "title")
+                {
+                    AddBotMessage(chat.UpdateTitle(_taskToUpdate, userMessage));
+                }
+                else if (_updateField == "2" || _updateField == "description")
+                {
+                    AddBotMessage(chat.UpdateDescription(_taskToUpdate, userMessage));
+                }
+
+                else if (_updateField == "3" || _updateField == "reminder")
+                    {
+                        ReminderParser.ReminderParseResult result =
+                            _reminderParser.ParseReminder(userMessage);
+
+                        if (!result.Success)
+                        {
+                            AddBotMessage(result.DisplayMessage);
+                            return;
+                        }
+
+                        AddBotMessage(chat.UpdateReminder(_taskToUpdate, result.ReminderDate));
+
+                        _isUpdatingTask = false;
+                        _awaitingUpdateChoice = false;
+                        _awaitingNewValue = false;
+
+                        _taskToUpdate = 0;
+                        _updateField = "";
+
+                        return;
+                    }
             }
         }
 

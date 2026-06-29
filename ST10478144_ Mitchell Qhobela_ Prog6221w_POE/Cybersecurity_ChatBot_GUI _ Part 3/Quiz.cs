@@ -18,9 +18,20 @@ namespace Cybersecurity_ChatBot_GUI
 
         public int Score = 0;
 
+        private readonly ChatLogger _logger;
+
         public Quiz()
         {
             LoadQuestions();
+        }
+
+        public Quiz(ChatLogger logger)
+        {
+            _logger = logger;
+
+            LoadQuestions();
+
+            _logger.Record("Quiz started.");
         }
 
         private void LoadQuestions()
@@ -220,6 +231,8 @@ namespace Cybersecurity_ChatBot_GUI
             {
                 feedback = " Time to lock in and study";
             }
+
+            _logger.Record($"Quiz completed. Score: {Score}/{Questions.Count}");
 
             return
                 "Quiz Finished!\n\n" +

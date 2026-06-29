@@ -106,6 +106,7 @@
     </ApplicationDefinition>
     <Compile Include="ActivityLog.cs" />
     <Compile Include="ChatBot.cs" />
+    <Compile Include="ChatLogger.cs" />
     <Compile Include="MemoryStore.cs" />
     <Compile Include="Quiz.cs" />
     <Compile Include="QuizQuestions.cs" />
